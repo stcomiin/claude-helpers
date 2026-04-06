@@ -28,8 +28,8 @@ claude-helpers/
 | Skill | Origin | Description | Invoke |
 |-------|--------|-------------|--------|
 | [team-code-review](.claude/skills/team-code-review/) | Internal | 6-stage multi-model code review pipeline — agent debate, Codex/GPT-5.4 cross-model review, CC-native review, BMAD adversarial review, consolidation, and Devil's Advocate challenge | `/team-code-review` |
-| [devils-advocate](.claude/skills/devils-advocate/) | Vendor | Challenges AI-generated plans, code, designs, and decisions using pre-mortem analysis, inversion thinking, and Socratic questioning | `/devils-advocate` |
-| [bmad-code-review](.claude/skills/bmad-code-review/) | Vendor | Adversarial code review using parallel review layers (Blind Hunter, Edge Case Hunter, Acceptance Auditor) with structured triage | `/bmad-code-review` |
+| [devils-advocate](.claude/skills/devils-advocate/SKILL.md) | Vendor | Challenges AI-generated plans, code, designs, and decisions using pre-mortem analysis, inversion thinking, and Socratic questioning | `/devils-advocate` |
+| [bmad-code-review](.claude/skills/bmad-code-review/SKILL.md) | Vendor | Adversarial code review using parallel review layers (Blind Hunter, Edge Case Hunter, Acceptance Auditor) with structured triage | `/bmad-code-review` |
 
 ## Dependency Map
 
