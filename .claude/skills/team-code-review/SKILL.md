@@ -1,11 +1,11 @@
 ---
 name: team-code-review
-description: 'Comprehensive 5-stage code review pipeline that orchestrates multi-perspective review of code changes: agent-team debate via /simplify, frontier-model Codex/GPT-5.4 security & design review, CC-native /everything-claude-code:code-review, adversarial /bmad-code-review, and Devil''s Advocate capstone challenge. Use this skill whenever the user wants a thorough code review, says "run the team code review", "full review", "5-stage review", "multi-model review", "comprehensive review", "team review", or is finishing a feature/story and wants quality assurance before committing or opening a PR. Trigger even when the user just says "code review" in a context where they have completed work and want layered review, since this pipeline provides the most rigorous review available.'
+description: 'Comprehensive 6-stage code review pipeline that orchestrates multi-perspective review of code changes: agent-team debate via /simplify, frontier-model Codex/GPT-5.4 security & design review, CC-native /everything-claude-code:code-review, adversarial /bmad-code-review, consolidation, and Devil''s Advocate capstone challenge. Use this skill whenever the user wants a thorough code review, says "run the team code review", "full review", "6-stage review", "multi-model review", "comprehensive review", "team review", or is finishing a feature/story and wants quality assurance before committing or opening a PR. Trigger even when the user just says "code review" in a context where they have completed work and want layered review, since this pipeline provides the most rigorous review available.'
 ---
 
 # Team Code Review Pipeline
 
-Orchestrates a 5-stage code review where each stage attacks changes from a fundamentally different angle. Different reviewers have different blind spots, and different model families catch different bug classes — layering independent perspectives is how you catch issues that any single reviewer would miss. The Devil's Advocate capstone then challenges the consensus itself, hunting for group-think and shared blind spots.
+Orchestrates a 6-stage code review where each stage attacks changes from a fundamentally different angle. Different reviewers have different blind spots, and different model families catch different bug classes — layering independent perspectives is how you catch issues that any single reviewer would miss. The Devil's Advocate capstone then challenges the consensus itself, hunting for group-think and shared blind spots.
 
 The pipeline runs: **(1) agent-team debate → (2) Codex frontier-model review → (3) CC-native review → (4) BMAD adversarial review → (5) consolidation → (6) Devil's Advocate challenge.**
 
