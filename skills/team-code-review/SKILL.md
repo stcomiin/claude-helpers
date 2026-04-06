@@ -78,24 +78,57 @@ Agent tool:
 
 Model diversity catches issues all Claude-based reviewers might collectively miss — different training data, different architecture, different blind spots.
 
+**Before dispatching:** Save the diff to a temp file so Codex reads it directly (avoids overhead of Codex shelling out for `git diff`):
+```bash
+git diff {scope_git_args} > /tmp/review-diff.patch
+```
+
+**Codex parameters:**
+- `--effort xhigh` — maximum reasoning depth for thorough review
+- No `--write` — review is read-only, Codex should not edit files
+- No `--model` — defaults to GPT-5.4 (latest frontier)
+
+**XML-structured prompt** — Codex performs significantly better with block-structured prompts using XML tags. The `gpt-5-4-prompting` skill (loaded automatically by the codex:codex-rescue agent) guides prompt construction. Use this structure:
+
 ```
 Agent tool:
   description: "Stage 2: Codex review"
   subagent_type: "codex:codex-rescue"
   prompt: |
-    Code review the following git diff using the latest frontier model (gpt-5.4) with xhigh reasoning effort.
+    --effort xhigh
 
-    DIFF TO REVIEW ({scope_description}):
-    ```
-    {diff_content}
-    ```
+    Code review the diff at /tmp/review-diff.patch. Use XML-structured prompting per the gpt-5-4-prompting skill:
 
-    Focus areas:
-    1. Security and vulnerabilities (injection, auth, secrets, unsafe patterns)
-    2. DRY, KISS, YAGNI violations
-    3. Readability and maintainability
+    <task>
+    Review the code diff at /tmp/review-diff.patch for a {language} {domain} project.
+    Scope: {scope_description}.
+    Focus areas: (1) security and vulnerabilities, (2) DRY/KISS/YAGNI violations, (3) readability and maintainability.
+    </task>
 
-    Return findings as markdown organized by focus area, with file:line references and severity (critical/high/medium/low/nit).
+    <grounding_rules>
+    Every finding MUST cite a specific file path and line number from the diff.
+    Do not infer behavior from function names alone — read the actual implementation.
+    If you suspect a test failure, state it as a hypothesis with "UNVERIFIED" tag, not as fact.
+    If you suspect dead code, grep for callers before claiming it is unused.
+    Do not flag patterns that appear 5+ times across the codebase as violations — they are conventions.
+    </grounding_rules>
+
+    <structured_output_contract>
+    Return findings as markdown with this structure per finding:
+    - **Title** (severity: critical/high/medium/low/nit)
+    - `file:line` reference
+    - What: 1-2 sentence description
+    - Why it matters: consequence if unaddressed
+    - Fix: concrete recommendation
+    Group findings by focus area (Security, DRY/KISS/YAGNI, Readability).
+    Maximum 15 findings. Quality over quantity.
+    </structured_output_contract>
+
+    <dig_deeper_nudge>
+    Look for things the diff does NOT do that it should: missing error handling on new code paths,
+    functions that changed signature but callers were not updated, new config that is declared but
+    never consumed, test assertions that pass trivially (e.g., asserting on default values).
+    </dig_deeper_nudge>
 ```
 
 ### Stage 3: Everything Claude Code Review
@@ -144,6 +177,12 @@ Agent tool:
     Return ALL findings from the triage step. Do not filter or summarize — the main orchestrator needs the raw triage output.
 ```
 
+### Critical finding verification rule (applies to ALL stages)
+
+Every stage prompt should include this instruction: **"If you believe a finding is Critical severity, verify it before reporting. If you claim tests fail, run `pytest <specific_test>` first. If you claim a function doesn't exist, `grep` for it first. Attach the verification command + output. Unverified Critical findings will be downgraded during consolidation."**
+
+This exists because AI reviewers are prone to consensus hallucination — multiple stages can independently fabricate the same false finding with high confidence. Verification is the only antidote.
+
 ### Dispatching all stages
 
 Send all 4 Agent tool calls **in a single message** so they execute concurrently. After all 4 return, proceed to Stage 5 (Consolidation).
@@ -160,9 +199,19 @@ This is where the pipeline's value crystallizes. Four independent reviewers each
 
 2. **Resolve severity conflicts.** If stages disagree on severity (e.g., Stage 1 says "critical", Stage 4 says "low"), investigate the disagreement. Usually the reviewer with more detailed evidence is correct, but flag the conflict so the user sees it.
 
-3. **Highlight unique findings.** Issues caught by only one stage are often the most valuable — they represent the blind spots the multi-stage approach is designed to catch. Don't bury these.
+3. **Verify Critical findings before publishing.** AI reviewers are prone to consensus hallucination — multiple stages can confidently report the same fabricated issue (e.g., "tests are failing" when they actually pass). Before promoting ANY finding to Critical severity:
+   - If the finding claims tests fail: run `pytest <specific_test>` and verify the failure
+   - If the finding claims a function doesn't exist or isn't called: run `grep -r` to verify
+   - If the finding claims a security vulnerability: verify the actual code path exists
+   - Attach the verification command + output to the Critical finding. No verification = no Critical.
 
-4. **Preserve contested findings.** The debate synthesizer (Stage 1) produces contested findings where agents disagreed. These go in their own section — they need human judgment.
+4. **Check codebase conventions before flagging patterns.** When a stage flags a code pattern as wrong (e.g., "using datetime.now(UTC) breaks determinism"), search for other occurrences. If the same pattern appears 5+ times across the codebase, it's likely an established convention — downgrade to "convention concern" with a note about the pattern's prevalence. Individual findings should not contradict codebase-wide architecture unless they can articulate why THIS instance is different.
+
+5. **Distinguish vulnerabilities from defense-in-depth.** When a finding claims "missing security isolation," verify whether the invariant is already enforced through another mechanism (e.g., FK chain, upstream query filter). If the isolation IS enforced transitively, downgrade from "vulnerability" to "defense-in-depth improvement" — the distinction matters for prioritization.
+
+6. **Highlight unique findings.** Issues caught by only one stage are often the most valuable — they represent the blind spots the multi-stage approach is designed to catch. Don't bury these.
+
+7. **Preserve contested findings.** The debate synthesizer (Stage 1) produces contested findings where agents disagreed. These go in their own section — they need human judgment.
 
 ### Output format
 

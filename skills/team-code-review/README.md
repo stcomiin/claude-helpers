@@ -59,23 +59,23 @@ Provides the `codex:codex-rescue` agent used in Stage 2 for GPT-5.4 cross-model 
   ```
 - **API key:** Requires a valid OpenAI API key configured for Codex CLI access
 
-### Skills (project-scoped)
+### External Skills (via git submodules)
 
-These skills are **not** globally installed plugins — they live in the `ss-platform-bmad` repository's `.claude/skills/` directory. They are only available when Claude Code can resolve them.
+These skills are pulled automatically from their official repos into `vendor/` when you clone with `--recursive`. Add the vendor skill paths to your Claude Code settings as shown in the root README.
 
 #### 3. bmad-code-review
 
 Used in Stage 4 for adversarial review.
 
-- **Location:** `ss-platform-bmad/.claude/skills/bmad-code-review/`
-- **Scope:** Project-local to `ss-platform-bmad`
+- **Source:** [bmad-code-org/BMAD-METHOD](https://github.com/bmad-code-org/BMAD-METHOD)
+- **Path:** `vendor/BMAD-METHOD/src/bmm-skills/4-implementation/bmad-code-review/`
 
 #### 4. devils-advocate
 
-Used in Stage 6 for the capstone challenge. Includes reference files (`ai-blind-spots.md`, `blind-spots.md`, `questioning-frameworks.md`).
+Used in Stage 6 for the capstone challenge. Includes reference files for blind spots and questioning frameworks.
 
-- **Location:** `ss-platform-bmad/.claude/skills/devils-advocate/`
-- **Scope:** Project-local to `ss-platform-bmad`
+- **Source:** [notmanas/claude-code-skills](https://github.com/notmanas/claude-code-skills)
+- **Path:** `vendor/claude-code-skills/skills/devils-advocate/`
 
 ### Built-in
 
@@ -83,24 +83,9 @@ Used in Stage 6 for the capstone challenge. Includes reference files (`ai-blind-
 
 Used in Stage 1 for agent team debate orchestration. Ships with Claude Code — no installation needed.
 
-## Making Project-Scoped Skills Available
+### Graceful degradation
 
-The `bmad-code-review` and `devils-advocate` skills are project-scoped to `ss-platform-bmad`. To use them from other repos, you have two options:
-
-**Option A:** Add the `ss-platform-bmad` skills path to your global settings:
-
-```jsonc
-// ~/.claude/settings.json
-{
-  "skills": [
-    "/path/to/ss-platform-bmad/.claude/skills"
-  ]
-}
-```
-
-**Option B:** Copy the skills into this repo's `skills/` directory (if the team decides to centralize them here).
-
-If these skills are unavailable at runtime, Stages 4 and 6 will fail gracefully — the pipeline consolidates results from whichever stages succeed.
+If any dependency is unavailable at runtime, that stage fails gracefully — the pipeline consolidates results from whichever stages succeed.
 
 ## Usage
 
