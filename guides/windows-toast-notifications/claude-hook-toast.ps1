@@ -15,6 +15,7 @@
 # No external dependencies.
 
 $json = ($input | Out-String) | ConvertFrom-Json -ErrorAction SilentlyContinue
+if (-not $json) { exit }
 $hookEvent = $json.hook_event_name
 $folder = if ($json.cwd) { Split-Path $json.cwd -Leaf } else { "unknown" }
 $message = switch ($hookEvent) {
