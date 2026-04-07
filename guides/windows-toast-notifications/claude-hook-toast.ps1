@@ -34,4 +34,5 @@ $template = [Windows.UI.Notifications.ToastNotificationManager, Windows.UI.Notif
 $template.SelectSingleNode('//text[@id="1"]').InnerText = "Claude Code ($folder)"
 $template.SelectSingleNode('//text[@id="2"]').InnerText = $message
 $appId = '{1AC14E77-02E7-4E5D-B744-2EB1AE5198B7}\WindowsPowerShell\v1.0\powershell.exe'
-[Windows.UI.Notifications.ToastNotificationManager]::CreateToastNotifier($appId).Show($template)
+$toast = [Windows.UI.Notifications.ToastNotification, Windows.UI.Notifications, ContentType = WindowsRuntime]::new($template)
+[Windows.UI.Notifications.ToastNotificationManager]::CreateToastNotifier($appId).Show($toast)
