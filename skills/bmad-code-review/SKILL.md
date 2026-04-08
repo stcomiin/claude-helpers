@@ -4,7 +4,7 @@ description: 'Review code changes adversarially using parallel review layers (Bl
 ---
 
 Follow the instructions in the upstream skill file:
-- Read and apply all instructions from [vendor SKILL.md](../../../vendor/BMAD-METHOD/src/bmm-skills/4-implementation/bmad-code-review/SKILL.md)
+- Read and apply all instructions from [vendor SKILL.md](../../vendor/BMAD-METHOD/src/bmm-skills/4-implementation/bmad-code-review/SKILL.md)
 
 The upstream skill also references a workflow file — read it when instructed:
-- [workflow.md](../../../vendor/BMAD-METHOD/src/bmm-skills/4-implementation/bmad-code-review/workflow.md)
+- [workflow.md](../../vendor/BMAD-METHOD/src/bmm-skills/4-implementation/bmad-code-review/workflow.md)

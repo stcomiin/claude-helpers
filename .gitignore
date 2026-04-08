@@ -1,0 +1,7 @@
+# BMad local tooling (installed per-user, not part of the plugin)
+.pi/
+_bmad/
+_bmad-output/
+
+# Claude Code local settings
+.claude/

@@ -1,0 +1,6 @@
+{
+  "name": "claude-helpers",
+  "description": "Shared Claude Code skills for multi-perspective code review — includes a 6-stage team review pipeline, BMAD adversarial review, and Devil's Advocate challenge.",
+  "version": "1.0.0",
+  "skillsPath": "skills"
+}

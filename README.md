@@ -1,20 +1,21 @@
 # claude-helpers
 
-Shared repository for common Claude Code resources used by our internal dev team — skills, plugins, and related configurations.
+Shared Claude Code plugin for multi-perspective code review — skills, hooks, and related configurations for dev teams.
 
 ## Structure
 
 ```
 claude-helpers/
-├── .claude/
-│   └── skills/                            # Claude Code skills (SKILL.md convention)
-│       ├── team-code-review/              #   6-stage multi-model code review pipeline
-│       │   ├── SKILL.md                   #     Skill definition (orchestration logic)
-│       │   └── README.md                  #     Prerequisites, setup, and usage guide
-│       ├── devils-advocate/               #   Thin wrapper → vendor/claude-code-skills
-│       │   └── SKILL.md
-│       └── bmad-code-review/              #   Thin wrapper → vendor/BMAD-METHOD
-│           └── SKILL.md
+├── .claude-plugin/
+│   └── plugin.json                        # Plugin manifest
+├── skills/                                # Claude Code skills (SKILL.md convention)
+│   ├── team-code-review/                  #   6-stage multi-model code review pipeline
+│   │   ├── SKILL.md                       #     Skill definition (orchestration logic)
+│   │   └── README.md                      #     Prerequisites, setup, and usage guide
+│   ├── devils-advocate/                   #   Thin wrapper → vendor/claude-code-skills
+│   │   └── SKILL.md
+│   └── bmad-code-review/                  #   Thin wrapper → vendor/BMAD-METHOD
+│       └── SKILL.md
 ├── hooks/                                 # Shared Claude Code hooks
 │   └── README.md                          #   Copy-paste JSON snippets and hook index
 ├── vendor/                                # Git submodules — external skill repos (do NOT modify)
@@ -27,9 +28,9 @@ claude-helpers/
 
 | Skill | Origin | Description | Invoke |
 |-------|--------|-------------|--------|
-| [team-code-review](.claude/skills/team-code-review/) | Internal | 6-stage multi-model code review pipeline — agent debate, Codex/GPT-5.4 cross-model review, CC-native review, BMAD adversarial review, consolidation, and Devil's Advocate challenge | `/team-code-review` |
-| [devils-advocate](.claude/skills/devils-advocate/SKILL.md) | Vendor | Challenges AI-generated plans, code, designs, and decisions using pre-mortem analysis, inversion thinking, and Socratic questioning | `/devils-advocate` |
-| [bmad-code-review](.claude/skills/bmad-code-review/SKILL.md) | Vendor | Adversarial code review using parallel review layers (Blind Hunter, Edge Case Hunter, Acceptance Auditor) with structured triage | `/bmad-code-review` |
+| [team-code-review](skills/team-code-review/) | Internal | 6-stage multi-model code review pipeline — agent debate, Codex/GPT-5.4 cross-model review, CC-native review, BMAD adversarial review, consolidation, and Devil's Advocate challenge | `/team-code-review` |
+| [devils-advocate](skills/devils-advocate/SKILL.md) | Vendor | Challenges AI-generated plans, code, designs, and decisions using pre-mortem analysis, inversion thinking, and Socratic questioning | `/devils-advocate` |
+| [bmad-code-review](skills/bmad-code-review/SKILL.md) | Vendor | Adversarial code review using parallel review layers (Blind Hunter, Edge Case Hunter, Acceptance Auditor) with structured triage | `/bmad-code-review` |
 
 ## Dependency Map
 
@@ -54,53 +55,45 @@ Skills in this repo may depend on external plugins, project-scoped skills, or bu
 
 See [hooks/README.md](hooks/) for install instructions.
 
-## Setup
+## Installation
 
-### Clone
+### Direct install
 
 ```bash
-git clone --recursive https://github.com/<org>/claude-helpers.git
+/plugin install https://github.com/<your-org>/claude-helpers
 ```
 
-The `--recursive` flag pulls the external skill repos into `vendor/` automatically.
+This clones the plugin and makes all skills available in Claude Code.
 
-If you already cloned without `--recursive`:
+### Team auto-install
+
+Add the plugin to your project's `.claude/settings.json` so it auto-installs for all team members:
+
+```jsonc
+{
+  "enabledPlugins": [
+    "https://github.com/<your-org>/claude-helpers"
+  ]
+}
+```
+
+### Update
+
+To pull the latest version of the plugin:
+
+```bash
+/plugin update claude-helpers
+```
+
+### Submodules (vendor skills)
+
+If the plugin does not automatically initialize submodules, run this in the plugin directory:
 
 ```bash
 git submodule update --init --recursive
 ```
 
-### Install skills
-
-Claude Code auto-discovers `.claude/skills/` from additional directories. Add this repo as an additional directory to make all skills permanently available.
-
-#### Option A: settings.json (recommended)
-
-Add the repo path to `additionalDirectories` in `~/.claude/settings.json`:
-
-```jsonc
-{
-  "permissions": {
-    "additionalDirectories": [
-      "/path/to/claude-helpers"
-    ]
-  }
-}
-```
-
-This persists across sessions. Claude Code will auto-discover and live-reload all skills from `.claude/skills/` in this repo.
-
-#### Option B: Per-session with `--add-dir`
-
-If you prefer not to modify settings:
-
-```bash
-claude --add-dir /path/to/claude-helpers
-```
-
-Same skill discovery, but only lasts for the current session.
-
-#### Verify
+### Verify
 
 After installing, confirm skills are visible:
 
@@ -112,15 +105,13 @@ After installing, confirm skills are visible:
 
 The thin wrappers for vendor skills reference the submodule files via relative paths, so everything works without extra configuration.
 
-### Hooks
-
-Hooks are standalone scripts — add them individually to your `~/.claude/settings.json` hooks config. See each hook's README entry for the exact JSON snippet.
+**Hooks** are not auto-installed by the plugin. See [hooks/README.md](hooks/) for manual configuration.
 
 ## Adding Resources
 
 ### Skills
 
-1. Create a directory under `.claude/skills/` with your skill name
+1. Create a directory under `skills/` with your skill name (kebab-case)
 2. Add a `SKILL.md` with YAML frontmatter (`name`, `description`) and the skill body
 3. Add a `README.md` with prerequisites, setup instructions, and usage
 4. Open a PR for team review
@@ -130,7 +121,7 @@ Hooks are standalone scripts — add them individually to your `~/.claude/settin
 To wrap an external skill from a git submodule:
 
 1. Add the upstream repo as a submodule under `vendor/`
-2. Create a thin wrapper directory under `.claude/skills/<skill-name>/`
+2. Create a thin wrapper directory under `skills/<skill-name>/`
 3. Add a `SKILL.md` that copies the `name` and `description` from the vendor skill and references the vendor `SKILL.md` via relative path
 4. Open a PR for team review
 
@@ -140,3 +131,7 @@ To wrap an external skill from a git submodule:
 2. Include install instructions as a comment header
 3. Add an entry to `hooks/README.md` and the root README hooks table
 4. Open a PR for team review
+
+## Future: Marketplace
+
+This plugin can be wrapped in a marketplace listing later by adding a `marketplace.json` at the root. This would allow discovery and one-click install via the Claude Code marketplace.

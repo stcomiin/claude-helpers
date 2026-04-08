@@ -61,7 +61,7 @@ Provides the `codex:codex-rescue` agent used in Stage 2 for GPT-5.4 cross-model 
 
 ### External Skills (via git submodules)
 
-These skills are pulled automatically from their official repos into `vendor/` when you clone with `--recursive`. No separate skill path configuration is needed — the thin wrappers in `.claude/skills/` reference the vendor files via relative paths. Just add this repo as an additional directory as shown in the root README.
+These skills are pulled automatically from their official repos into `vendor/` when you clone with `--recursive`. No separate skill path configuration is needed — the thin wrappers in `skills/` reference the vendor files via relative paths. Install the plugin as shown in the root README.
 
 #### 3. bmad-code-review
 
