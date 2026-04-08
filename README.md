@@ -134,4 +134,4 @@ To wrap an external skill from a git submodule:
 
 ## Future: Marketplace
 
-This plugin can be wrapped in a marketplace listing later by adding a `marketplace.json` at the root. This would allow discovery and one-click install via the Claude Code marketplace.
+This plugin can be wrapped in a marketplace listing later by extending `.claude-plugin/plugin.json` with marketplace metadata (or adding a separate `marketplace.json` in that directory). This would allow discovery and one-click install via the Claude Code marketplace.
