@@ -1,0 +1,15 @@
+{
+  "name": "claude-helpers",
+  "description": "Multi-perspective code review skills for Claude Code — includes a 6-stage team review pipeline, BMAD adversarial review, and Devil's Advocate challenge.",
+  "plugins": [
+    {
+      "name": "claude-helpers",
+      "description": "Multi-perspective code review skills — 6-stage team pipeline, BMAD adversarial review, Devil's Advocate challenge.",
+      "version": "1.0.0",
+      "source": {
+        "source": "subdirectory",
+        "path": "."
+      }
+    }
+  ]
+}

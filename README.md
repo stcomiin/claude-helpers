@@ -7,7 +7,8 @@ Shared Claude Code plugin for multi-perspective code review — skills, hooks, a
 ```
 claude-helpers/
 ├── .claude-plugin/
-│   └── plugin.json                        # Plugin manifest
+│   ├── plugin.json                        # Plugin manifest
+│   └── marketplace.json                   # Self-hosted marketplace catalog
 ├── skills/                                # Claude Code skills (SKILL.md convention)
 │   ├── team-code-review/                  #   6-stage multi-model code review pipeline
 │   │   ├── SKILL.md                       #     Skill definition (orchestration logic)
@@ -28,9 +29,9 @@ claude-helpers/
 
 | Skill | Origin | Description | Invoke |
 |-------|--------|-------------|--------|
-| [team-code-review](skills/team-code-review/) | Internal | 6-stage multi-model code review pipeline — agent debate, Codex/GPT-5.4 cross-model review, CC-native review, BMAD adversarial review, consolidation, and Devil's Advocate challenge | `/team-code-review` |
-| [devils-advocate](skills/devils-advocate/SKILL.md) | Vendor | Challenges AI-generated plans, code, designs, and decisions using pre-mortem analysis, inversion thinking, and Socratic questioning | `/devils-advocate` |
-| [bmad-code-review](skills/bmad-code-review/SKILL.md) | Vendor | Adversarial code review using parallel review layers (Blind Hunter, Edge Case Hunter, Acceptance Auditor) with structured triage | `/bmad-code-review` |
+| [team-code-review](skills/team-code-review/) | Internal | 6-stage multi-model code review pipeline — agent debate, Codex/GPT-5.4 cross-model review, CC-native review, BMAD adversarial review, consolidation, and Devil's Advocate challenge | `/claude-helpers:team-code-review` |
+| [devils-advocate](skills/devils-advocate/SKILL.md) | Vendor | Challenges AI-generated plans, code, designs, and decisions using pre-mortem analysis, inversion thinking, and Socratic questioning | `/claude-helpers:devils-advocate` |
+| [bmad-code-review](skills/bmad-code-review/SKILL.md) | Vendor | Adversarial code review using parallel review layers (Blind Hunter, Edge Case Hunter, Acceptance Auditor) with structured triage | `/claude-helpers:bmad-code-review` |
 
 ## Dependency Map
 
@@ -57,50 +58,76 @@ See [hooks/README.md](hooks/) for install instructions.
 
 ## Installation
 
-### Direct install
+This repo is both a **plugin** and a self-hosted **marketplace**. Install in two steps: add the marketplace, then install the plugin from it.
+
+### 1. Add the marketplace
 
 ```bash
-/plugin install https://github.com/<your-org>/claude-helpers
+/plugin marketplace add <your-org>/claude-helpers
 ```
 
-This clones the plugin and makes all skills available in Claude Code.
+This registers the repo as a plugin source. For non-GitHub hosts, use the full URL:
+
+```bash
+/plugin marketplace add https://gitlab.com/<your-org>/claude-helpers.git
+```
+
+### 2. Install the plugin
+
+```bash
+/plugin install claude-helpers@claude-helpers
+```
+
+The format is `plugin-name@marketplace-name`.
 
 ### Team auto-install
 
-Add the plugin to your project's `.claude/settings.json` so it auto-installs for all team members:
+Add the marketplace to your project's `.claude/settings.json` so it auto-installs for all team members:
 
 ```jsonc
 {
-  "enabledPlugins": [
-    "https://github.com/<your-org>/claude-helpers"
-  ]
+  "extraKnownMarketplaces": {
+    "claude-helpers": {
+      "source": {
+        "source": "github",
+        "repo": "<your-org>/claude-helpers"
+      }
+    }
+  }
 }
 ```
 
+When team members trust the project folder, Claude Code prompts them to install the marketplace and its plugins.
+
 ### Update
 
-To pull the latest version of the plugin:
+Refresh the marketplace listing and update installed plugins:
 
 ```bash
-/plugin update claude-helpers
+/plugin marketplace update claude-helpers
 ```
 
-### Submodules (vendor skills)
+Or enable auto-updates via `/plugin` → **Marketplaces** → select `claude-helpers` → **Enable auto-update**.
 
-If the plugin does not automatically initialize submodules, run this in the plugin directory:
+### Local development
+
+To test the plugin without installing from the marketplace:
 
 ```bash
-git submodule update --init --recursive
+git clone --recursive https://github.com/<your-org>/claude-helpers.git
+claude --plugin-dir ./claude-helpers
 ```
+
+Use `/reload-plugins` to pick up changes without restarting.
 
 ### Verify
 
 After installing, confirm skills are visible:
 
 ```
-/team-code-review
-/devils-advocate
-/bmad-code-review
+/claude-helpers:team-code-review
+/claude-helpers:devils-advocate
+/claude-helpers:bmad-code-review
 ```
 
 The thin wrappers for vendor skills reference the submodule files via relative paths, so everything works without extra configuration.
@@ -132,6 +159,10 @@ To wrap an external skill from a git submodule:
 3. Add an entry to `hooks/README.md` and the root README hooks table
 4. Open a PR for team review
 
-## Future: Marketplace
+## Official Marketplace
 
-This plugin can be wrapped in a marketplace listing later by extending `.claude-plugin/plugin.json` with marketplace metadata (or adding a separate `marketplace.json` in that directory). This would allow discovery and one-click install via the Claude Code marketplace.
+This plugin can also be submitted to the official Anthropic marketplace via [claude.ai/settings/plugins/submit](https://claude.ai/settings/plugins/submit). Once accepted, users could install with:
+
+```bash
+/plugin install claude-helpers@claude-plugins-official
+```
