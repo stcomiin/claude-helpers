@@ -69,6 +69,12 @@ This repo is a self-hosted **marketplace** containing three plugins. Add the mar
 claude plugin marketplace add stcomiin/claude-helpers
 ```
 
+For non-GitHub hosts, use the full URL:
+
+```bash
+claude plugin marketplace add https://gitlab.com/<your-org>/claude-helpers.git
+```
+
 ### 2. Install plugins
 
 ```bash
