@@ -54,6 +54,12 @@ Skills in this repo may depend on external plugins, project-scoped skills, or bu
 
 See [hooks/README.md](hooks/) for install instructions.
 
+## Guides
+
+| Guide | Platform | Description |
+|-------|----------|-------------|
+| [Windows Toast Notifications](guides/windows-toast-notifications/) | Windows | Native toast notifications for Claude Code events — see which project needs attention across multiple sessions |
+
 ## Setup
 
 ### Clone
