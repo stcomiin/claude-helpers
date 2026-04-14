@@ -9,7 +9,7 @@
   "plugins": [
     {
       "name": "claude-helpers",
-      "source": ".",
+      "source": "./",
       "description": "6-stage team code review pipeline — agent debate, Codex/GPT-5.4 cross-model review, CC-native review, BMAD adversarial review, consolidation, and Devil's Advocate challenge.",
       "version": "1.0.0"
     },
