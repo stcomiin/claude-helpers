@@ -55,7 +55,7 @@ grep -n -E "pass$|return None$|return \{\}|return \[\]|raise NotImplementedError
 grep -c -E "^(def |class |async def )" "$file"   # Function/class count
 wc -l < "$file"                                    # Line count (>20 for real modules)
 # Check for stub bodies
-grep -A 2 "^def \|^class " "$file" | grep -c "pass$\|raise NotImplementedError\|return None$"
+grep -A 10 "^def \|^class " "$file" | grep -c "pass$\|raise NotImplementedError\|return None$"
 ```
 
 **Stub patterns specific to Python:**
@@ -84,7 +84,7 @@ def transform(input):
 **Wiring check:**
 ```bash
 # Module is imported somewhere
-grep -r "from ${module} import\|import ${module}" src/ --include="*.py" | grep -v "$file" | wc -l
+grep -rw "from ${module} import\|import ${module}" src/ --include="*.py" | grep -v "$file" | wc -l
 # Exported symbols are actually called
 grep -r "${function_name}(" src/ --include="*.py" | grep -v "def ${function_name}" | wc -l
 ```
@@ -156,7 +156,7 @@ def migrate(repo: str):
 **Wiring check:**
 ```bash
 # Command calls functions from core/stage layers (not self-contained)
-grep -A 30 "@app.command" "$cli_file" | grep -E "from.*import|^\s+\w+\.\w+("
+grep -A 30 "@app.command" "$cli_file" | grep -E "from.*import|^\s+\w+\.\w+\("
 # Command is registered in the app (for sub-apps)
 grep -E "app\.add_typer|include_router" "$cli_file"
 ```
@@ -242,7 +242,7 @@ grep -A 30 "@app.command" "$cli_file" | grep -E "from.*import|^\s+\w+\.\w+\("
 # Verify imported functions are actually called (not just imported)
 IMPORTS=$(grep "^from.*import" "$cli_file" | sed 's/.*import //' | tr ',' '\n' | tr -d ' ')
 for func in $IMPORTS; do
-  grep -c "$func(" "$cli_file" | grep -v "^0$"
+  grep -cw "$func(" "$cli_file" | grep -v "^0$"
 done
 ```
 
