@@ -142,8 +142,14 @@ After installing, confirm skills are visible:
 If you previously installed this repo via `additionalDirectories` in `~/.claude/settings.json`:
 
 1. Remove the `additionalDirectories` entry pointing to this repo
-2. Follow the [Installation](#installation) steps above to add the marketplace and install plugins
-3. Skills are now namespaced — update any references from `/team-code-review` to `/claude-helpers:team-code-review`
+2. Follow the [Installation](#installation) steps above to add the marketplace and install all three plugins
+3. Update skill references — all names changed:
+
+| Old | New |
+|-----|-----|
+| `/team-code-review` | `/claude-helpers:team-code-review` |
+| `/bmad-code-review` | `/bmad-review:bmad-code-review` |
+| `/devils-advocate` | `/devils-advocate:devils-advocate` |
 
 ## Adding Resources
 

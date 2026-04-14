@@ -5,7 +5,7 @@
   "author": {
     "name": "averliz"
   },
-  "repository": "https://github.com/averliz/claude-helpers",
+  "repository": "https://github.com/stcomiin/claude-helpers",
   "license": "MIT",
   "keywords": ["code-review", "multi-model", "adversarial", "team-review"]
 }

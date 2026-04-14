@@ -7,3 +7,5 @@ _bmad-output/
 .claude/todos/
 .claude/todos.json
 .claude/state/
+.claude/settings*.json
+.claude/commands/
