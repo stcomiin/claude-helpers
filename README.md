@@ -66,13 +66,7 @@ This repo is a self-hosted **marketplace** containing three plugins. Add the mar
 ### 1. Add the marketplace
 
 ```bash
-claude plugin marketplace add <your-org>/claude-helpers
-```
-
-For non-GitHub hosts, use the full URL:
-
-```bash
-claude plugin marketplace add https://gitlab.com/<your-org>/claude-helpers.git
+claude plugin marketplace add stcomiin/claude-helpers
 ```
 
 ### 2. Install plugins
@@ -95,7 +89,7 @@ Add the marketplace to your project's `.claude/settings.json` so it auto-install
     "claude-helpers": {
       "source": {
         "source": "github",
-        "repo": "<your-org>/claude-helpers"
+        "repo": "stcomiin/claude-helpers"
       }
     }
   }
@@ -119,7 +113,7 @@ Or enable auto-updates via `/plugin` → **Marketplaces** → select `claude-hel
 To test the claude-helpers plugin locally without installing from the marketplace:
 
 ```bash
-git clone https://github.com/<your-org>/claude-helpers.git
+git clone https://github.com/stcomiin/claude-helpers.git
 claude --plugin-dir ./claude-helpers
 ```
 
