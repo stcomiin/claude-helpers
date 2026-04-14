@@ -59,6 +59,12 @@ The team-code-review pipeline orchestrates skills from multiple plugins. This ta
 
 See [hooks/README.md](hooks/) for install instructions.
 
+## Guides
+
+| Guide | Platform | Description |
+|-------|----------|-------------|
+| [Windows Toast Notifications](guides/windows-toast-notifications/) | Windows | Native toast notifications for Claude Code events — see which project needs attention across multiple sessions |
+
 ## Installation
 
 This repo is a self-hosted **marketplace** containing three plugins. Add the marketplace, then install the plugins.
