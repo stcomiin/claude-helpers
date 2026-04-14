@@ -1,6 +1,0 @@
-[submodule "vendor/claude-code-skills"]
-	path = vendor/claude-code-skills
-	url = https://github.com/notmanas/claude-code-skills.git
-[submodule "vendor/BMAD-METHOD"]
-	path = vendor/BMAD-METHOD
-	url = https://github.com/bmad-code-org/BMAD-METHOD.git

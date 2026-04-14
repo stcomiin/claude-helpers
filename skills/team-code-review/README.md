@@ -28,9 +28,9 @@ Main Thread: Scope → Dispatch 4 parallel stages → Consolidate → Devil's Ad
 | 1 | Agent Team Debate | 4 reviewers (security, performance, design, maintainability) debate findings, then a synthesizer resolves disagreements | `simplify` skill |
 | 2 | Codex Frontier Model | Cross-model review using GPT-5.4 — catches issues Claude-based reviewers collectively miss | `codex:codex-rescue` agent |
 | 3 | CC-Native Review | Language-specific quality checks (code-reviewer, python-reviewer, or go-reviewer) | `everything-claude-code` plugin |
-| 4 | BMAD Adversarial | Blind Hunter, Edge Case Hunter, Acceptance Auditor — hunts for issues other stages dismiss | `bmad-code-review` skill |
+| 4 | BMAD Adversarial | Blind Hunter, Edge Case Hunter, Acceptance Auditor — hunts for issues other stages dismiss | `bmad-review:bmad-code-review` plugin |
 | 5 | Consolidation | Deduplicates, reconciles severity conflicts, highlights unique and contested findings | Built-in (main thread) |
-| 6 | Devil's Advocate | Steel-Man → Challenge → Verdict. Pre-mortem, inversion, and Socratic probing against consensus | `devils-advocate` skill |
+| 6 | Devil's Advocate | Steel-Man → Challenge → Verdict. Pre-mortem, inversion, and Socratic probing against consensus | `devils-advocate:devils-advocate` plugin |
 
 ## Prerequisites
 
@@ -59,23 +59,25 @@ Provides the `codex:codex-rescue` agent used in Stage 2 for GPT-5.4 cross-model 
   ```
 - **API key:** Requires a valid OpenAI API key configured for Codex CLI access
 
-### External Skills (via git submodules)
+### Marketplace Plugins (installed via claude-helpers marketplace)
 
-These skills are pulled automatically from their official repos into `vendor/` when you clone with `--recursive`. No separate skill path configuration is needed — the thin wrappers in `skills/` reference the vendor files via relative paths. Install the plugin as shown in the root README.
+These skills are distributed as separate plugins through the claude-helpers marketplace. They are installed automatically when you add the marketplace and install all its plugins.
 
 #### 3. bmad-code-review
 
 Used in Stage 4 for adversarial review.
 
 - **Source:** [bmad-code-org/BMAD-METHOD](https://github.com/bmad-code-org/BMAD-METHOD)
-- **Path:** `vendor/BMAD-METHOD/src/bmm-skills/4-implementation/bmad-code-review/`
+- **Plugin:** `bmad-review@claude-helpers`
+- **Install:** `claude plugin install bmad-review@claude-helpers`
 
 #### 4. devils-advocate
 
 Used in Stage 6 for the capstone challenge. Includes reference files for blind spots and questioning frameworks.
 
 - **Source:** [notmanas/claude-code-skills](https://github.com/notmanas/claude-code-skills)
-- **Path:** `vendor/claude-code-skills/skills/devils-advocate/`
+- **Plugin:** `devils-advocate@claude-helpers`
+- **Install:** `claude plugin install devils-advocate@claude-helpers`
 
 ### Built-in
 
@@ -90,7 +92,7 @@ If any dependency is unavailable at runtime, that stage fails gracefully — the
 ## Usage
 
 ```
-/team-code-review
+/claude-helpers:team-code-review
 ```
 
 The skill auto-detects scope from git state:

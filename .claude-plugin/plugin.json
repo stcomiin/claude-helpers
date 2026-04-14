@@ -1,5 +1,11 @@
 {
   "name": "claude-helpers",
-  "description": "Shared Claude Code skills for multi-perspective code review — includes a 6-stage team review pipeline, BMAD adversarial review, and Devil's Advocate challenge.",
-  "version": "1.0.0"
+  "version": "1.0.0",
+  "description": "6-stage team code review pipeline — agent debate, Codex/GPT-5.4 cross-model review, CC-native review, BMAD adversarial review, consolidation, and Devil's Advocate challenge.",
+  "author": {
+    "name": "averliz"
+  },
+  "repository": "https://github.com/averliz/claude-helpers",
+  "license": "MIT",
+  "keywords": ["code-review", "multi-model", "adversarial", "team-review"]
 }

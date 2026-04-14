@@ -3,5 +3,7 @@
 _bmad/
 _bmad-output/
 
-# Claude Code local settings
-.claude/
+# Claude Code local state (not project config)
+.claude/todos/
+.claude/todos.json
+.claude/state/
