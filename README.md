@@ -10,9 +10,14 @@ claude-helpers/
 │   ├── plugin.json                        # Plugin manifest (claude-helpers plugin)
 │   └── marketplace.json                   # Marketplace catalog (3 plugins)
 ├── skills/                                # Skills for the claude-helpers plugin
-│   └── team-code-review/                  #   6-stage multi-model code review pipeline
-│       ├── SKILL.md                       #     Skill definition (orchestration logic)
-│       └── README.md                      #     Prerequisites, setup, and usage guide
+│   ├── team-code-review/                  #   6-stage multi-model code review pipeline
+│   │   ├── SKILL.md                       #     Skill definition (orchestration logic)
+│   │   └── README.md                      #     Prerequisites, setup, and usage guide
+│   └── bmad-verify-story/                 #   Goal-backward story verification
+│       ├── SKILL.md                       #     Entry point
+│       ├── workflow.md                    #     10-step verification workflow
+│       ├── templates/                     #     Verification report template
+│       └── references/                    #     Stub/wiring detection patterns
 ├── hooks/                                 # Shared Claude Code hooks
 │   └── README.md                          #   Copy-paste JSON snippets and hook index
 └── README.md                              # This file
@@ -24,7 +29,7 @@ This marketplace distributes three plugins. The `claude-helpers` plugin is inter
 
 | Plugin | Skills | Source | Install |
 |--------|--------|--------|---------|
-| claude-helpers | [team-code-review](skills/team-code-review/) | Internal | `claude plugin install claude-helpers@claude-helpers` |
+| claude-helpers | [team-code-review](skills/team-code-review/), [bmad-verify-story](skills/bmad-verify-story/) | Internal | `claude plugin install claude-helpers@claude-helpers` |
 | bmad-review | bmad-code-review | [bmad-code-org/BMAD-METHOD](https://github.com/bmad-code-org/BMAD-METHOD) | `claude plugin install bmad-review@claude-helpers` |
 | devils-advocate | devils-advocate | [notmanas/claude-code-skills](https://github.com/notmanas/claude-code-skills) | `claude plugin install devils-advocate@claude-helpers` |
 
@@ -33,6 +38,7 @@ This marketplace distributes three plugins. The `claude-helpers` plugin is inter
 | Skill | Invoke |
 |-------|--------|
 | team-code-review | `/claude-helpers:team-code-review` |
+| bmad-verify-story | `/claude-helpers:bmad-verify-story` |
 | bmad-code-review | `/bmad-review:bmad-code-review` |
 | devils-advocate | `/devils-advocate:devils-advocate` |
 
