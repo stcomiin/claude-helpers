@@ -1,6 +1,6 @@
 ---
 name: team-code-review
-description: 'Comprehensive 6-stage code review pipeline that orchestrates multi-perspective review of code changes: agent-team debate via /simplify, frontier-model Codex/GPT-5.4 security & design review, CC-native /everything-claude-code:code-review, adversarial /bmad-code-review, consolidation, and Devil''s Advocate capstone challenge. Use this skill whenever the user wants a thorough code review, says "run the team code review", "full review", "6-stage review", "multi-model review", "comprehensive review", "team review", or is finishing a feature/story and wants quality assurance before committing or opening a PR. Trigger even when the user just says "code review" in a context where they have completed work and want layered review, since this pipeline provides the most rigorous review available.'
+description: 'Comprehensive 6-stage code review pipeline that orchestrates multi-perspective review of code changes: agent-team debate via /simplify, frontier-model Codex/GPT-5.4 security & design review, CC-native /everything-claude-code:code-review, adversarial /bmad-review:bmad-code-review, consolidation, and Devil''s Advocate capstone challenge. Use this skill whenever the user wants a thorough code review, says "run the team code review", "full review", "6-stage review", "multi-model review", "comprehensive review", "team review", or is finishing a feature/story and wants quality assurance before committing or opening a PR. Trigger even when the user just says "code review" in a context where they have completed work and want layered review, since this pipeline provides the most rigorous review available.'
 ---
 
 # Team Code Review Pipeline
@@ -11,7 +11,7 @@ The pipeline runs: **(1) agent-team debate → (2) Codex frontier-model review �
 
 ## Step 0: Establish Review Scope
 
-Scope must be settled ONCE upfront because downstream skills (bmad-code-review, everything-claude-code:code-review) will otherwise each re-prompt the user. Establishing it here makes the pipeline feel like one cohesive review instead of four separate ones.
+Scope must be settled ONCE upfront because downstream skills (bmad-review:bmad-code-review, everything-claude-code:code-review) will otherwise each re-prompt the user. Establishing it here makes the pipeline feel like one cohesive review instead of four separate ones.
 
 **Detect scope from the user's request:**
 
@@ -166,7 +166,7 @@ Agent tool:
     Run a BMAD adversarial code review on {scope_description}.
 
     Invoke the Skill tool:
-      skill: "bmad-code-review"
+      skill: "bmad-review:bmad-code-review"
       args: "review the {scope_description}"
 
     The bmad-code-review skill will:
@@ -277,7 +277,7 @@ Agent tool:
     ```
 
     Your task:
-    1. Invoke the Skill tool with skill: "devils-advocate"
+    1. Invoke the Skill tool with skill: "devils-advocate:devils-advocate"
     2. Follow its process: Steel-Man → Challenge → Verdict
     3. Apply pre-mortem ("this shipped and failed 3 months later — what went wrong?"), inversion ("what would guarantee failure?"), and Socratic probing
     4. Cross-reference against the AI blind spots file — look for things the 4 AI reviewers collectively missed
@@ -357,7 +357,7 @@ Main Thread: Step 0 (scope) ──→ Dispatch 4 parallel subagents ──→ St
 **Stage 6 runs as a sequential subagent** because Devil's Advocate explicitly needs to challenge the consensus AFTER it forms. Running it in parallel would give it nothing to challenge. It runs as a subagent (not main thread) because it reads ~800 lines of skill + reference files and would bloat the main thread's context.
 
 Each subagent type maps to a real capability:
-- `general-purpose` — has access to ALL tools (Skill, Agent, Bash), can invoke `/simplify`, `/bmad-code-review`, `/devils-advocate`, and dispatch sub-subagents
+- `general-purpose` — has access to ALL tools (Skill, Agent, Bash), can invoke `/simplify`, `/bmad-review:bmad-code-review`, `/devils-advocate:devils-advocate`, and dispatch sub-subagents
 - `codex:codex-rescue` — dedicated Codex bridge with Bash access to invoke the CLI
 - `everything-claude-code:code-reviewer` / `python-reviewer` — specialized review agents with built-in review logic
 

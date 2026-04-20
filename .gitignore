@@ -1,0 +1,11 @@
+# BMad local tooling (installed per-user, not part of the plugin)
+.pi/
+_bmad/
+_bmad-output/
+
+# Claude Code local state (not project config)
+.claude/todos/
+.claude/todos.json
+.claude/state/
+.claude/settings*.json
+.claude/commands/
